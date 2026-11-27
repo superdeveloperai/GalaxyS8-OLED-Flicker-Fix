@@ -2,6 +2,9 @@
 
 A **kernel + Magisk** fix for aging **Samsung Super AMOLED devices** (tested on Galaxy S8 Exynos `dreamlte`, adaptable to any rooted Samsung Galaxy S/Note/A-series phone) that exhibit **green/white screen flickering** and **touchscreen glitches** at low brightness levels due to low-voltage PWM/AID degradation.
 
+> **When Does This Fix Work?**
+> This fix works for any Samsung Super AMOLED device whose display and touch are **stable at high brightness** (e.g. 70%–100%) and only flicker or glitch at low brightness. It cannot fix hardware that flickers even at 100% brightness (such as a physically torn/failing display flex cable).
+
 > **Using an AI Assistant for Another Samsung Model?**
 > This repository is structured so you (or an AI coding assistant) can adapt the exact same two-layer fix to **any rooted Samsung AMOLED device**:
 > 1. Probe `/sys/class/backlight/panel/brightness` to find your panel's flicker-free hardware floor.
