@@ -1,5 +1,7 @@
 # Samsung AMOLED Low-Brightness OLED Flicker & Touch Glitch Fix
 
+![How the 2-Layer Fix Works](media/galaxy_s8_oled_flicker_fix.gif)
+
 A **kernel + Magisk** fix for aging **Samsung Super AMOLED devices** (tested on Galaxy S8 Exynos `dreamlte`, adaptable to any rooted Samsung Galaxy S/Note/A-series phone) that exhibit **green/white screen flickering** and **touchscreen glitches** at low brightness levels due to low-voltage PWM/AID degradation.
 
 > **When Does This Fix Work?**
