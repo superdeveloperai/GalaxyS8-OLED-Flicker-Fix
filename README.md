@@ -73,3 +73,10 @@ Pre-built boot image (`boot_patched_g950f_hadesKernel_v1.5_pie.img`) is availabl
 - **Root:** Magisk `29.0` + TWRP Recovery
 
 > **Disclaimer:** Flashing a boot image carries inherent risk. Always back up your current `BOOT` partition in TWRP before flashing. See [docs/FLASHING_GUIDE.md](docs/FLASHING_GUIDE.md).
+
+---
+
+## Support This Project
+If this fix saved your AMOLED screen or helped you avoid an expensive display replacement:
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-wasimahamad-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/wasimahamad)
