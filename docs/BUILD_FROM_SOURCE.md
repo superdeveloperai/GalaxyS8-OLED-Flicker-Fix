@@ -1,6 +1,18 @@
-# Building the Patched Kernel from Source
+# Building & Adapting the Patched Kernel for Any Samsung Device
 
-These steps reproduce `boot_patched_g950f_hadesKernel_v1.5_pie.img` using a native `arm64` Ubuntu 20.04 Docker container (or any native ARM64 Linux host).
+These steps reproduce `boot_patched_g950f_hadesKernel_v1.5_pie.img` for Galaxy S8 (`dreamlte`) and show how to adapt the same pattern to **any rooted Samsung AMOLED device** (S8+, Note 8, S9, S10, A-series, etc.).
+
+## Adapting to Other Samsung Devices (or with an AI Assistant)
+1. **Find your device's safe hardware floor** via rooted ADB: raise the brightness slider until flickering and touch glitches stop, then read `cat /sys/class/backlight/panel/brightness` (or `/sys/class/leds/lcd-backlight/brightness` on some devices).
+2. **Locate your kernel's backlight setter:**
+   - **Samsung Exynos (S8/S8+/Note8/S9/S10/etc.):** `drivers/video/fbdev/exynos/panel/panel_bl.c` -> `panel_bl_set_brightness()`.
+   - **Samsung Snapdragon:** `drivers/gpu/drm/msm/dsi-staging/dsi_panel.c` (or `drivers/video/msm/mdss/mdss_dsi_panel.c`) -> `dsi_panel_set_backlight()`.
+3. **Clamp the minimum brightness** using the same `min_hw_brightness` `module_param` pattern in `patches/0001-panel_bl-clamp-min-hw-brightness.patch`, compile `Image`, and repack with your device's `boot_backup.img` ramdisk.
+4. **Software dimming:** Use `scripts/oled_flicker_fix.sh` on Android 8–11 (`SurfaceFlinger 1015`), or Android's built-in Extra Dim (`settings put secure reduce_bright_colors_activated 1`) on Android 12+.
+
+---
+
+## Building for Galaxy S8 (`dreamlte` / `hadesKernel`)
 
 > **macOS Note:** Do **not** build the Linux kernel directly on a case-insensitive APFS volume—files like `TlcTui.o` vs `tlcTui.o` and `net/netfilter/xt_*` will collide. Always build inside a case-sensitive Linux `ext4` Docker volume.
 

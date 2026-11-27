@@ -1,11 +1,17 @@
-# Samsung Galaxy S8 (Exynos 8895) Low-Brightness OLED Flicker & Touch Glitch Fix
+# Samsung AMOLED Low-Brightness OLED Flicker & Touch Glitch Fix
 
-A **kernel + Magisk** fix for aging Samsung Super AMOLED panels (Exynos `dreamlte` / SM-G950F / SM-G950FD) that exhibit **green/white screen flickering** and **touchscreen glitches** at low brightness levels due to low-voltage PWM/AID degradation.
+A **kernel + Magisk** fix for aging **Samsung Super AMOLED devices** (tested on Galaxy S8 Exynos `dreamlte`, adaptable to any rooted Samsung Galaxy S/Note/A-series phone) that exhibit **green/white screen flickering** and **touchscreen glitches** at low brightness levels due to low-voltage PWM/AID degradation.
+
+> **Using an AI Assistant for Another Samsung Model?**
+> This repository is structured so you (or an AI coding assistant) can adapt the exact same two-layer fix to **any rooted Samsung AMOLED device**:
+> 1. Probe `/sys/class/backlight/panel/brightness` to find your panel's flicker-free hardware floor.
+> 2. Apply the kernel clamp pattern from [`patches/0001-panel_bl-clamp-min-hw-brightness.patch`](patches/0001-panel_bl-clamp-min-hw-brightness.patch) to your device's kernel source (`panel_bl.c` on Exynos, or `dsi_panel.c` / `mdss_dsi_panel.c` on Snapdragon).
+> 3. Use [`scripts/oled_flicker_fix.sh`](scripts/oled_flicker_fix.sh) on Android 8–11 (or native Extra Dim `reduce_bright_colors` on Android 12+).
 
 ---
 
 ## Why This Happens
-On aging Galaxy S8 / Note 8 AMOLED panels, dropping hardware backlight below a threshold (e.g. `plat_br < 7000–21500`) starves the panel's shared ELVDD/ELVSS/touch rails, causing:
+On aging Samsung AMOLED panels, dropping hardware backlight below a threshold (e.g. `plat_br < 7000–21500`) starves the panel's shared ELVDD/ELVSS/touch rails, causing:
 1. Green/white screen flickering (especially during lock/wake brightness ramps and low-light use).
 2. Ghost touches or unresponsive digitizer at low brightness.
 
