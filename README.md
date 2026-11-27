@@ -30,6 +30,16 @@ Locking `/sys/class/backlight/panel/brightness` from userspace (`chmod 444`) is 
 
 ---
 
+## Downloads (Pre-Built Patched Kernel)
+
+- **Direct Kernel Image (`boot_patched_g950f_hadesKernel_v1.5_pie.img`):**  
+  [Download v1.0.0 Boot Image](https://github.com/superdeveloperai/GalaxyS8-OLED-Flicker-Fix/releases/download/v1.0.0/boot_patched_g950f_hadesKernel_v1.5_pie.img)
+- **All Releases & Checksums:** [GitHub Releases](https://github.com/superdeveloperai/GalaxyS8-OLED-Flicker-Fix/releases/tag/v1.0.0)
+
+> Only flash this pre-built `.img` on **Galaxy S8 Exynos (`dreamlte`)** running **Android 9 (`hadesRom_OneUI_v12.0` / `hadesKernel-v1.5`)**. For other Samsung models or Android versions, see [docs/BUILD_FROM_SOURCE.md](docs/BUILD_FROM_SOURCE.md).
+
+---
+
 ## Repository Structure
 
 ```text
