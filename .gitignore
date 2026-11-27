@@ -1,0 +1,6 @@
+.DS_Store
+backups/
+boot_unpack/
+Image_patched
+kernel_src/
+releases/*.img

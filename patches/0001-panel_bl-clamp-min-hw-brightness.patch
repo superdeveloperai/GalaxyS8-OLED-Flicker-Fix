@@ -1,0 +1,38 @@
+diff --git a/drivers/video/fbdev/exynos/panel/panel_bl.c b/drivers/video/fbdev/exynos/panel/panel_bl.c
+index 6bfb1066..4139ef8c 100644
+--- a/drivers/video/fbdev/exynos/panel/panel_bl.c
++++ b/drivers/video/fbdev/exynos/panel/panel_bl.c
+@@ -12,6 +12,7 @@
+  */
+ 
+ #include <linux/backlight.h>
++#include <linux/moduleparam.h>
+ #include "../dpu/dsim.h"
+ #include "panel.h"
+ #include "panel_bl.h"
+@@ -25,6 +26,15 @@
+ 
+ static int brt_cache_tbl[MAX_PANEL_BL_SUBDEV][BRT_USER(EXTEND_BRIGHTNESS) + 1];
+ 
++/*
++ * Minimum hardware brightness floor to keep OLED panel voltage above the
++ * low-brightness PWM flicker / touch-glitch threshold. Tunable at runtime via
++ * /sys/module/panel_bl/parameters/min_hw_brightness (0..36600).
++ */
++static int min_hw_brightness = 23000;
++module_param(min_hw_brightness, int, 0644);
++MODULE_PARM_DESC(min_hw_brightness, "Minimum hardware brightness floor (0-36600)");
++
+ #ifdef DEBUG_PAC
+ static void print_tbl(int *tbl, int sz)
+ {
+@@ -436,6 +446,9 @@ int panel_bl_set_brightness(struct panel_bl_device *panel_bl, int id, int force)
+ 	panel_bl->props.id = id;
+ 	subdev = &panel_bl->subdev[id];
+ 	brightness = subdev->brightness;
++	if (id == PANEL_BL_SUBDEV_TYPE_DISP && min_hw_brightness > 0 &&
++	    brightness < min_hw_brightness)
++		brightness = min_hw_brightness;
+ 
+ 	if (!subdev->brt_tbl.brt || subdev->brt_tbl.sz_brt == 0) {
+ 		panel_err("%s bl-%d brightness table not exist\n", __func__, id);

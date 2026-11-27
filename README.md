@@ -1,0 +1,54 @@
+# Samsung Galaxy S8 (Exynos 8895) Low-Brightness OLED Flicker & Touch Glitch Fix
+
+A **kernel + Magisk** fix for aging Samsung Super AMOLED panels (Exynos `dreamlte` / SM-G950F / SM-G950FD) that exhibit **green/white screen flickering** and **touchscreen glitches** at low brightness levels due to low-voltage PWM/AID degradation.
+
+---
+
+## Why This Happens
+On aging Galaxy S8 / Note 8 AMOLED panels, dropping hardware backlight below a threshold (e.g. `plat_br < 7000–21500`) starves the panel's shared ELVDD/ELVSS/touch rails, causing:
+1. Green/white screen flickering (especially during lock/wake brightness ramps and low-light use).
+2. Ghost touches or unresponsive digitizer at low brightness.
+
+Locking `/sys/class/backlight/panel/brightness` from userspace (`chmod 444`) is not enough on its own because the kernel driver (`panel_bl.c`) still ramps brightness down during wake/AOD/boot transitions, and third-party overlay dimming apps trigger Android tapjacking/permission blocks.
+
+---
+
+## How This Fix Works (Two-Layer Architecture)
+
+1. **Kernel-Level Hardware Voltage Floor (`patches/0001-panel_bl-clamp-min-hw-brightness.patch`):**
+   - Clamps `PANEL_BL_SUBDEV_TYPE_DISP` brightness inside `panel_bl_set_brightness()` to at least `min_hw_brightness` (default: **`23000`** / ~372 nits, safely within Samsung's stock `0–25500` UI / `36600` HBM range).
+   - Exposes `/sys/module/panel_bl/parameters/min_hw_brightness` (`0644`) so you can tune the hardware floor live as root without reflashing.
+2. **Magisk `service.d` Software Dimming (`scripts/oled_flicker_fix.sh`):**
+   - Polls `screen_brightness` (`0–255`) every `0.25s` and applies **`SurfaceFlinger` color-matrix dimming (`1015`)** from `0.25` (slider at 0%) to `1.0` (slider at 100%).
+   - Works with **manual** and **Adaptive Brightness**, with zero overlay apps and zero tapjacking issues.
+
+---
+
+## Repository Structure
+
+```text
+.
+├── README.md
+├── docs/
+│   ├── FLASHING_GUIDE.md          # Step-by-step TWRP/ADB flashing & rollback guide
+│   └── BUILD_FROM_SOURCE.md       # Reproducible Docker ARM64 kernel build guide
+├── patches/
+│   └── 0001-panel_bl-clamp-min-hw-brightness.patch
+├── scripts/
+│   ├── oled_flicker_fix.sh        # Magisk service.d slider -> SurfaceFlinger daemon
+│   └── revert_oled_fix.sh         # Remove service.d script & reset SurfaceFlinger
+└── docker/
+    └── Dockerfile                 # Ubuntu 20.04 ARM64 kernel build environment
+```
+
+Pre-built boot image (`boot_patched_g950f_hadesKernel_v1.5_pie.img`) is available on the **GitHub Releases** page.
+
+---
+
+## Tested Device & ROM Profile
+- **Hardware:** Samsung Galaxy S8 Exynos (`SM-G950F`, `samsungexynos8895`, `dreamlte`)
+- **ROM:** `hadesRom_OneUI_v12.0` (Android 9 Pie / SDK 28)
+- **Kernel Base:** `4.4.111-hadesKernel-v1.5-dreamlte` ([corsicanu/android_kernel_samsung_universal8895](https://github.com/corsicanu/android_kernel_samsung_universal8895), branch `9`)
+- **Root:** Magisk `29.0` + TWRP Recovery
+
+> **Disclaimer:** Flashing a boot image carries inherent risk. Always back up your current `BOOT` partition in TWRP before flashing. See [docs/FLASHING_GUIDE.md](docs/FLASHING_GUIDE.md).
